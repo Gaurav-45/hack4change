@@ -1,0 +1,10 @@
+:root {
+  --primary: #fec701;
+  --black: #000;
+  --white: #fff;
+}
+
+.App {
+  width: 100vw;
+  overflow-x: hidden;
+}
