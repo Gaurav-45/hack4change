@@ -8,3 +8,27 @@
   width: 100vw;
   overflow-x: hidden;
 }
+
+.App {
+  margin-top: 15px;
+  text-align: center;
+  /* background-color: #08162a; */
+}
+
+.App .navbar-brand {
+  font-weight: bold;
+  color: aqua;
+}
+
+.app-nav-bar {
+  background-color: #08162a;
+}
+
+.nav-link {
+  color: aqua;
+}
+
+.App .container {
+  padding-right: 35px;
+  padding-left: 34px;
+}

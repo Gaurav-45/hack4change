@@ -19,7 +19,7 @@ const TopNavbar = () => {
           <Link to="/title1">
             <p className="topnav_menu_item">Yeild predictor</p>
           </Link>
-          <Link to="/title2">
+          <Link to="/disdetector">
             <p className="topnav_menu_item">Disease detector</p>
           </Link>
           <Link to="/title3">
@@ -39,7 +39,7 @@ const TopNavbar = () => {
           <Link to="/title1" onClick={toggleMenu}>
             <p className="topnav_menu_item">Yeild predictor</p>
           </Link>
-          <Link to="/title2" onClick={toggleMenu}>
+          <Link to="/disdetector" onClick={toggleMenu}>
             <p className="topnav_menu_item">Disease detector</p>
           </Link>
           <Link to="/title3" onClick={toggleMenu}>

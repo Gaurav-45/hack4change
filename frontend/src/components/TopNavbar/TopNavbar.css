@@ -63,6 +63,7 @@
   .topnav_main_element {
     width: 81vw;
     padding: 0 4vw;
+    height: 7vh;
   }
   .topnav_ele.logo {
     flex: 1;
@@ -89,7 +90,7 @@
     align-items: center;
     background-color: white;
     position: absolute;
-    top: 12vh;
+    top: 9vh;
     left: 0;
     right: 0;
     margin-left: auto;
