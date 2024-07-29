@@ -7,6 +7,9 @@ import json
 import requests
 import os
 
+import tensorflow as tf
+from helpers.disease_detection import CLASS_NAMES, DISEASE_MODEL, read_file_as_image
+
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
@@ -56,7 +59,30 @@ def getCropPrice():
     except Exception as ex:
        print("Exception -- ", ex)
 
+# Disease Detection -- Start
 
+@app.route('/disease-prediction', methods=['GET', 'POST'])
+def disease_prediction():        
+    try:
+        file = request.files.get('file')
+        file = file.read() #byte data
+        image = read_file_as_image(file)
+
+        image = tf.image.resize(image, [256,256]).numpy()
+
+        image = np.expand_dims(image, 0) # 1d to 2d
+        predictions = DISEASE_MODEL.predict(image)
+
+        predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+        confidence = round(np.max(predictions[0])*100,2) # 0 because provided only one image
+
+        return {
+            'confidence': float(confidence),
+            'class': predicted_class
+        }, 201
+    except Exception as ex:
+        return {"error": str(ex)}, 401
+## Disease Detection -- End
 
 api = Api(app)
 
