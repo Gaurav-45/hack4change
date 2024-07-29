@@ -26,13 +26,13 @@ def getCropPrice():
         }
 
         if(data["filters[state.keyword]"]):
-            params["filters[state.keyword]"]: data['state']
+            params["filters[state.keyword]"] = data['state']
         
         if(data["filters[district]"]):
-            params["filters[district]"]: data['district']
+            params["filters[district]"] =  data['district']
         
         if(data["filters[commodity]"]):
-            params["filters[commodity]"]: data['commodity']
+            params["filters[commodity]"] = data['commodity']
         
             
         res = requests.get("https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070", params)
