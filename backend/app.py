@@ -19,7 +19,7 @@ def getCropPrice():
         data = json.loads(request.data)
 
         params = {
-           "api-key":  os.environ.get('API_KEY'),
+           "api-key":  os.environ.get('CROP_PREDICTOR_API_KEY'),
            "format": 'json',
            "offset":0,
            "limit":10,
