@@ -21,6 +21,7 @@ client = Groq(
 class Medicine(BaseModel):
     name: str
     information: str
+    dose: str
 
 class CropDisease(BaseModel):
     information: str
