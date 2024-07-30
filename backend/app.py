@@ -25,22 +25,24 @@ def getCropPrice():
            "limit":10,
         }
 
-        if(data["filters[state.keyword]"]):
-            params["filters[state.keyword]"] = data['state']
+        if "state" in data:
+            params["filters[State.keyword]"] = data["state"]
         
-        if(data["filters[district]"]):
-            params["filters[district]"] =  data['district']
+        if "district" in data:
+            params["filters[District.keyword]"] =  data["district"]
         
-        if(data["filters[commodity]"]):
-            params["filters[commodity]"] = data['commodity']
+        if "commodity" in data:
+            params["filters[Commodity.keyword]"] = data["commodity"]
         
+
+        print("Params - ", params)
             
-        res = requests.get("https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070", params)
+        res = requests.get("https://api.data.gov.in/resource/35985678-0d79-46b4-9ed6-6f13308a1d24", params)
 
         response_bytes = res.content
         responseData = json.loads(response_bytes.decode('utf-8'))  # Assuming UTF-8 encoding
 
-        print("response - ", responseData)
+        print("response - ", responseData["records"])
 
         return Response(
            response=json.dumps({
