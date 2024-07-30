@@ -74,7 +74,7 @@ def getCropPrice():
     except Exception as ex:
        print("Exception -- ", ex)
 
-@app.route("/getCropDiseaseInformation", methods=["GET"])
+@app.route("/getCropDiseaseInformation", methods=["GET", "POST"])
 def getCropDiseaseInformation():
     try:
         print("request Payload - ", json.loads(request.data))
