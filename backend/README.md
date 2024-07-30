@@ -6,6 +6,7 @@ Name the file as .env and add the below code -
 
 ```
 CROP_PREDICTOR_API_KEY = "YOUR API KEY"
+GROQ_API_KEY = "YOUR API KEY"
 ```
 
 
@@ -166,6 +167,45 @@ Response -
             "Commodity_Code": "19"
         }
     ]
+}
+
+```
+
+
+2) getCropDiseaseInformation -  API to generate Disease Information 
+
+API URL - http://localhost:5000/getCropDiseaseInformation
+
+Expected JSON Request Payload in body -
+
+```
+{
+    "disease": "Bacterial Leaf Spot"
+}
+```
+
+Response -
+```
+{
+    "message": "Success",
+    "metaData": {
+        "disease": "Bacterial Leaf Spot"
+    },
+    "result": {
+        "information": "Bacterial Leaf Spot is a common disease affecting various crops, including tomatoes, peppers, and cucumbers. It is caused by the bacterium Xanthomonas campestris.",
+        "causes": "The disease is spread through contaminated water, infected seeds, and contact with infected plants. It thrives in warm and humid environments.",
+        "treatment": "Early detection and removal of infected plants are crucial. Chemical control involves applying copper-based fungicides, while biological control involves using beneficial bacteria to outcompete the pathogen.",
+        "medicine": [
+            {
+                "name": "Copper-based fungicide",
+                "information": "Apply 1-2% copper oxychloride solution to the affected area."
+            },
+            {
+                "name": "Beneficial bacteria",
+                "information": "Apply Bacillus subtilis or Pseudomonas fluorescens to the soil to outcompete the pathogen."
+            }
+        ]
+    }
 }
 
 ```
