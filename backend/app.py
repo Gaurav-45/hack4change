@@ -92,7 +92,7 @@ def getCropDiseaseInformation():
             {
                 "role": "user",
                 # - { information: string , causes: string ,treatment: string , medicine: string}
-                "content": "Give accurate information for the following crop disease - " + str(data["disease"]) + ". Also provide its causes, treatment and medicine dosage to use. Provide the response strictly in expected JSON format with the mentioned datatype."
+                "content": "Give accurate information for the following crop disease - " + str(data["disease"]) + ". Also provide its causes, treatment and medicine dosage to use. Provide the response strictly in expected JSON format with the mentioned datatype. provide the medical dose in 5 to 8 words max"
             }
         ],
         model="llama3-8b-8192",
