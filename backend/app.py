@@ -6,11 +6,27 @@ from dotenv import load_dotenv
 import json
 import requests
 import os
+from groq import Groq
+from pydantic import BaseModel
+from typing import List
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
+
+class Medicine(BaseModel):
+    name: str
+    information: str
+
+class CropDisease(BaseModel):
+    information: str
+    causes: str
+    treatment: str
+    medicine: List[Medicine]
 
 @app.route("/getCropPrice", methods=["GET"])
 def getCropPrice():
@@ -19,7 +35,7 @@ def getCropPrice():
         data = json.loads(request.data)
 
         params = {
-           "api-key":  os.environ.get('API_KEY'),
+           "api-key":  os.environ.get('CROP_PREDICTOR_API_KEY'),
            "format": 'json',
            "offset":0,
            "limit":10,
@@ -58,6 +74,49 @@ def getCropPrice():
     except Exception as ex:
        print("Exception -- ", ex)
 
+@app.route("/getCropDiseaseInformation", methods=["GET"])
+def getCropDiseaseInformation():
+    try:
+        print("request Payload - ", json.loads(request.data))
+        data = json.loads(request.data)
+        if "disease" not in data:
+            raise Exception("Disease name is required")
+        chat_completion = client.chat.completions.create(messages=[
+             {
+                "role": "system", 
+                "content": "You are a farmer assistant that outputs responses in JSON.\n"
+                # Pass the json schema to the model. Pretty printing improves results.
+                f" The JSON object must use the schema: {json.dumps(CropDisease.model_json_schema(), indent=2)}",
+            },
+            {
+                "role": "user",
+                # - { information: string , causes: string ,treatment: string , medicine: string}
+                "content": "Give accurate information for the following crop disease - " + str(data["disease"]) + ". Also provide its causes, treatment and medicine dosage to use. Provide the response strictly in expected JSON format with the mentioned datatype."
+            }
+        ],
+        model="llama3-8b-8192",
+        temperature=0,
+        stream=False,
+        response_format={"type": "json_object"},
+        )
+
+        print(chat_completion.choices[0].message.content)
+
+        response = chat_completion.choices[0].message.content
+        
+        return Response(
+           response=json.dumps({
+            "message":"Success",
+            "metaData": data,
+            "result": json.loads(response),
+            }),
+           status = 200,
+           mimetype="application/json"
+
+        )
+
+    except Exception as ex:
+        print("Exception --", ex)
 
 
 api = Api(app)
