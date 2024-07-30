@@ -22,7 +22,7 @@ const TopNavbar = () => {
           <Link to="/disdetector">
             <p className="topnav_menu_item">Disease detector</p>
           </Link>
-          <Link to="/title3">
+          <Link to="/price-predictor">
             <p className="topnav_menu_item">Price predictor</p>
           </Link>
         </div>
@@ -42,7 +42,7 @@ const TopNavbar = () => {
           <Link to="/disdetector" onClick={toggleMenu}>
             <p className="topnav_menu_item">Disease detector</p>
           </Link>
-          <Link to="/title3" onClick={toggleMenu}>
+          <Link to="/price-predictor" onClick={toggleMenu}>
             <p className="topnav_menu_item">Price predictor</p>
           </Link>
           <div className="topnav_collapse_button">
