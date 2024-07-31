@@ -31,7 +31,7 @@ class CropDisease(BaseModel):
     treatment: str
     medicine: List[Medicine]
 
-@app.route("/getCropPrice", methods=["GET"])
+@app.route("/getCropPrice", methods=["GET", "POST"])
 def getCropPrice():
     try:
         print("request Payload - ", json.loads(request.data))
@@ -61,7 +61,7 @@ def getCropPrice():
 
         response_bytes = res.content
         responseData = json.loads(response_bytes.decode('utf-8'))  # Assuming UTF-8 encoding
-
+        print("responseData : ", responseData)
         print("response - ", responseData["records"])
 
         return Response(
@@ -76,7 +76,8 @@ def getCropPrice():
         )
         
     except Exception as ex:
-       print("Exception -- ", ex)
+       print("Exception -- ", str(ex))
+       return {"error": str(ex)}, 500
 
 @app.route("/getCropDiseaseInformation", methods=["GET", "POST"])
 def getCropDiseaseInformation():
