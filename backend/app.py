@@ -46,6 +46,9 @@ def getCropPrice():
 
         if "state" in data:
             params["filters[state.keyword]"] = data["state"]
+
+        if "district" in data:
+            params["filters[district]"] =  data["district"]
         
         
         if "commodity" in data:
