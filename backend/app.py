@@ -9,6 +9,8 @@ import os
 from groq import Groq
 from pydantic import BaseModel
 from typing import List
+from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_community.vectorstores import Chroma
 
 from helpers.twiliohelper import makeCall, makeSMS
 
@@ -19,6 +21,26 @@ CORS(app)
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
 )
+
+def query_documents_local(collection, question):
+    results = collection.similarity_search_with_score(query=question, k=1)
+    return results
+
+
+def chroma_init():
+    embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+
+    persist_directory = "./db"
+    if not os.path.exists(persist_directory):
+        os.makedirs(persist_directory)
+
+    collection = Chroma(
+        collection_name="farmer-schemes-govi",
+        embedding_function=embedding_function,
+        persist_directory=persist_directory,
+    )
+
+    return collection
 
 class Medicine(BaseModel):
     name: str
@@ -141,6 +163,68 @@ def fun_call_sms():
     except Exception as ex:
         print(f"--error: {str(ex)}")
         return {"error": str(ex)}, 500
+    
+
+@app.route("/api/chat", methods=["POST"])
+def chat_response():
+    try:
+        request_data = request.get_json()
+
+        # Extract the user message
+        messages = request_data.get("messages", [])
+        user_message = ""
+
+        if (
+            messages
+            and "text" in messages[0]
+            and (messages[0]["text"] != "Yes" and messages[0]["text"] != "No")
+        ):
+            user_message = messages[0]["text"]
+            query = user_message
+            collection = chroma_init()
+            resp = query_documents_local(collection, query)
+            final_resp = f"title - {resp[0][0].metadata['title']}, content - {resp[0][0].page_content}"
+
+            print("Context - ",final_resp)
+
+            print("final conetne  - ",f"Consider you are a farmer assistant that has to answer the questions of the farmers based on context provided. Consider this context - {final_resp}\n")
+            
+            chat_completion = client.chat.completions.create(messages=[
+                    {
+                        "role": "system", 
+                        "content": f"Consider you are a farmer assistant that has to answer the questions of the farmers based on context provided. Summarize the answer to include only certain important points in a proper format. Also consider that this information is being displayed to a farmer who does not have a lot of technical knowledge about finance and all so make the content easy to understand and how will it be able to help the farmer in what way.Generate the response in hindi. Consider this context - {final_resp}\n"
+                    },
+                    {
+                        "role": "user",
+                        "content": query
+                    }
+                ],
+                model="llama3-8b-8192",
+                temperature=0,
+                stream=False
+            )
+
+            print("respopppp - ",chat_completion.choices[0])
+            response = chat_completion.choices[0].message.content
+            response_data = {
+                "role": "ai",
+                "text": response,
+            }
+
+            print()
+            print()
+            print("finallllllllllllll - ",response_data)
+
+            return [response_data]
+        else:
+            response_data = {
+                "role": "ai",
+                "text": f"Thanks recorded!",
+            }
+            return [response_data]
+    except Exception as ex:
+        print("Exception --", ex)
+    
 
 api = Api(app)
 
